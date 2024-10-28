@@ -1,34 +1,74 @@
-#include "GL/glut.h"
+#include <windows.h>
+#include <GL/glut.h>
 
-void display(void)
-
+void Desenha(void)
 {
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 0.0f, 0.0f);
 
-    glVertex2f(-0.3, -0.3);
+    glBegin(GL_QUADS); // Quadrado de cor azul
 
-    glVertex2f(-0.3, 0.3);
+    glVertex2i(100, 150);
 
-    glVertex2f(0.3, 0.3);
+    glVertex2i(100, 100);
 
-    glVertex2f(0.3, -0.3);
+    glColor3f(0.0f, 0.0f, 1.0f);
+
+    glVertex2i(150, 100);
+
+    glVertex2i(150, 150);
 
     glEnd();
 
     glFlush();
 }
 
+void Inicializa(void)
+
+{
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void MudaTamanhoJanela(GLsizei w, GLsizei h)
+{
+    if (h == 0)
+        h = 1;
+
+    glViewport(0, 0, w, h);
+
+    glMatrixMode(GL_PROJECTION);
+
+    glLoadIdentity();
+
+    if (w <= h)
+        gluOrtho2D(0.0f, 250.0f, 0.0f, 250.0f * h / w);
+    else
+        gluOrtho2D(0.0f, 250.0f * w / h, 0.0f, 250.0f);
+}
+
+
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 
-    glutCreateWindow("Ola Mundo");
+    glutInitWindowSize(500, 350);
 
-    glutDisplayFunc(display);
+    glutInitWindowPosition(50, 30);
+
+    glutCreateWindow("Quadrado");
+
+    glutDisplayFunc(Desenha);
+
+    glutReshapeFunc(MudaTamanhoJanela);
+
+    Inicializa();
 
     glutMainLoop();
 }
