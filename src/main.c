@@ -1,115 +1,145 @@
+#include <windows.h>
+
 #include <GL/glut.h>
-#include <stdlib.h>
 
-float line1StartX = 40, line1StartY = 200;
-float line1EndX = 200, line1EndY = 10;
+GLfloat x1 = 100.0f;
 
-float line2StartX = 10, line2StartY = 10;
-float line2EndX = 190, line2EndY = 150;
+GLfloat y1 = 150.0f;
 
-int line1Color = 0; // 0 for red, 1 for green
-int line2Color = 1; // 0 for red, 1 for green
+GLsizei rsize = 50;
 
-void init(void);
-void display(void);
-void keyboard(unsigned char key, int x, int y);
-void specialKeys(int key, int x, int y);
+// Tamanho do incremento nas direções x e y
 
-int main(int argc, char **argv) {
-    glutInit(&argc, argv); // Initialize GLUT
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(256, 256); // Set window dimensions
-    glutInitWindowPosition(100, 100); // Set window position
-    glutCreateWindow("Desenhando linhas"); // Create window
+//(número de pixels para se mover a cada
 
-    init();
-    glutDisplayFunc(display); // Register display function
-    glutKeyboardFunc(keyboard); // Register keyboard function
-    glutSpecialFunc(specialKeys); // Register special keys (arrow keys)
-    
-    glutMainLoop(); // Enter GLUT event processing loop
-    return 0;
-}
+// intervalo de tempo)
 
-// Initialization function
-void init(void) {
-    glClearColor(1.0, 1.0, 1.0, 1.0); // Background color
-    glOrtho(0, 256, 0, 256, -1, 1); // Orthographic projection
-}
+GLfloat xstep = 1.0f;
 
-// Display function
-void display(void) {
-    glClear(GL_COLOR_BUFFER_BIT); // Clear the window
+GLfloat ystep = 1.0f;
 
-    // Draw first line (red or green)
-    glColor3f(line1Color == 0 ? 1.0 : 0.0, 0.0, line1Color == 1 ? 1.0 : 0.0);
-    glBegin(GL_LINES);
-        glVertex2f(line1StartX, line1StartY);
-        glVertex2f(line1EndX, line1EndY);
+// Largura e altura da janela
+
+GLfloat windowWidth;
+
+GLfloat windowHeight;
+
+// Função chamada para fazer o desenho
+
+void Desenha(void)
+
+{
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+
+    glBegin(GL_QUADS);
+
+    glVertex2i(x1, y1 + rsize);
+
+    glVertex2i(x1, y1);
+
+    glColor3f(0.0f, 0.0f, 1.0f);
+
+    glVertex2i(x1 + rsize, y1);
+
+    glVertex2i(x1 + rsize, y1 + rsize);
+
     glEnd();
 
-    // Draw second line (red or green)
-    glColor3f(line2Color == 0 ? 1.0 : 0.0, 0.0, line2Color == 1 ? 1.0 : 0.0);
-    glBegin(GL_LINES);
-        glVertex2f(line2StartX, line2StartY);
-        glVertex2f(line2EndX, line2EndY);
-    glEnd();
-
-    glFlush(); // Flush drawing commands
+    glutSwapBuffers();
 }
 
-// Keyboard function
-void keyboard(unsigned char key, int x, int y) {
-    if (key == 32) { // Space key to invert colors
-        line1Color = 1 - line1Color;
-        line2Color = 1 - line2Color;
-    }
-    if (key == 'x' || key == 'X') { // Invert direction
-        float tempX = line1StartX;
-        float tempY = line1StartY;
-        line1StartX = line1EndX;
-        line1StartY = line1EndY;
-        line1EndX = tempX;
-        line1EndY = tempY;
+// Função callback chamada pela GLUT a cada intervalo de tempo
 
-        tempX = line2StartX;
-        tempY = line2StartY;
-        line2StartX = line2EndX;
-        line2StartY = line2EndY;
-        line2EndX = tempX;
-        line2EndY = tempY;
-    }
-    glutPostRedisplay(); // Redraw the scene
+void Timer(int value)
+
+{
+
+    // Muda a direção quando chega na borda esquerda ou direita
+
+    if (x1 > windowWidth - rsize || x1 < 0)
+
+        xstep = -xstep;
+
+    // Move o quadrado horizontalmente
+
+    x1 += xstep;
+
+    // Redesenha o quadrado com as novas coordenadas
+
+    glutPostRedisplay();
+
+    glutTimerFunc(10, Timer, 1);
 }
 
-// Special keys function (for arrow keys)
-void specialKeys(int key, int x, int y) {
-    const float moveAmount = 5.0f;
-    switch (key) {
-        case GLUT_KEY_UP:
-            line1StartY += moveAmount;
-            line1EndY += moveAmount;
-            line2StartY += moveAmount;
-            line2EndY += moveAmount;
-            break;
-        case GLUT_KEY_DOWN:
-            line1StartY -= moveAmount;
-            line1EndY -= moveAmount;
-            line2StartY -= moveAmount;
-            line2EndY -= moveAmount;
-            break;
-        case GLUT_KEY_LEFT:
-            line1StartX -= moveAmount;
-            line1EndX -= moveAmount;
-            line2StartX -= moveAmount;
-            line2EndX -= moveAmount;
-            break;
-        case GLUT_KEY_RIGHT:
-            line1StartX += moveAmount;
-            line1EndX += moveAmount;
-            line2StartX += moveAmount;
-            line2EndX += moveAmount;
-            break;
+void Inicializa(void)
+
+{
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void MudaTamanhoJanela(GLsizei w, GLsizei h)
+
+{
+
+    // Para evitar a divisão por zero
+
+    if (h == 0)
+        h = 1;
+
+    glViewport(0, 0, w, h);
+
+    // Inicializa o sistema de coordenadas
+
+    glMatrixMode(GL_PROJECTION);
+
+    glLoadIdentity();
+
+    if (w <= h)
+    {
+
+        windowHeight = 250.0f * h / w;
+
+        windowWidth = 250.0f;
     }
-    glutPostRedisplay(); // Redraw the scene
+
+    else
+    {
+
+        windowWidth = 250.0f * w / h;
+
+        windowHeight = 250.0f;
+    }
+
+    gluOrtho2D(0.0f, windowWidth, 0.0f, windowHeight);
+}
+
+
+int main(int argc, char *argv[])
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+
+    glutInitWindowSize(400, 350);
+
+    glutInitWindowPosition(10, 10);
+
+    glutCreateWindow("Anima");
+
+    glutDisplayFunc(Desenha);
+
+    glutReshapeFunc(MudaTamanhoJanela);
+
+    glutTimerFunc(10, Timer, 1);
+
+    Inicializa();
+
+    glutMainLoop();
 }
