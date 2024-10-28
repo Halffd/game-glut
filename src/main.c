@@ -4,8 +4,8 @@
 float line1StartX = 40, line1StartY = 200;
 float line1EndX = 200, line1EndY = 10;
 
-float line2StartX = 100, line2StartY = 100;
-float line2EndX = 150, line2EndY = 150;
+float line2StartX = 10, line2StartY = 10;
+float line2EndX = 190, line2EndY = 150;
 
 int line1Color = 0; // 0 for red, 1 for green
 int line2Color = 1; // 0 for red, 1 for green
