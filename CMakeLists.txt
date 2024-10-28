@@ -23,6 +23,7 @@ set(FILES ${SOURCES}) #${HEADERS}
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/../bin")
 
 # Include directories for header files
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/../src")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/../include")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/../include/GL")
 
