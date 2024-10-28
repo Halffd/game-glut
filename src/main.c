@@ -1,13 +1,16 @@
 #include <windows.h>
 #include <GL/glut.h>
+#include <stdio.h>
 
 void Desenha(void)
 {
-    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_TEXTURE);
 
     glLoadIdentity();
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    int c = GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+    printf("%d %x",c,c);
+    glClear(c);
 
     glColor3f(1.0f, 0.0f, 0.0f);
 
@@ -56,7 +59,10 @@ void MudaTamanhoJanela(GLsizei w, GLsizei h)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    int a = GLUT_DOUBLE | GLUT_SINGLE | GLUT_RGBA | GLUT_RGB | GLUT_INDEX | GLUT_DEPTH | GLUT_STENCIL | GLUT_MULTISAMPLE;
+    int b = GLUT_SINGLE | GLUT_RGB;
+    printf("%d %x %d %x",a,a,b,b);
+    glutInitDisplayMode(b);
 
     glutInitWindowSize(500, 350);
 
