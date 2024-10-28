@@ -1,80 +1,60 @@
-#include <windows.h>
 #include <GL/glut.h>
-#include <stdio.h>
 
-void Desenha(void)
+#include <stdlib.h>
+
+void init(void);
+
+void display(void);
+
+void keyboard(unsigned char key, int x, int y);
+
+int main(int argc, char **argv)
 {
-    glMatrixMode(GL_TEXTURE);
 
-    glLoadIdentity();
+    glutInit(&argc, argv); // Inicializa o GLUT
 
-    int c = GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
-    printf("%d %x",c,c);
-    glClear(c);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 
-    glColor3f(1.0f, 0.0f, 0.0f);
+    glutInitWindowSize(256, 256); // Especifica as dimensões da janela
 
-    glBegin(GL_QUADS); // Quadrado de cor azul
+    glutInitWindowPosition(100, 100); // Especifica aonde a janela aparece na tela
 
-    glVertex2i(100, 150);
+    glutCreateWindow("Desenhando uma linha"); // Cria a janela
 
-    glVertex2i(100, 100);
+    init();
 
-    glColor3f(0.0f, 0.0f, 1.0f);
+    glutDisplayFunc(display); // Função que será redesenhada pelo GLUT
 
-    glVertex2i(150, 100);
+    // glutKeyboardFunc(keyboard); //Funções de teclado
 
-    glVertex2i(150, 150);
+    glutMainLoop(); // Mostra todas as janelas criadas
+
+    return 0;
+}
+
+// Definição de cada função
+
+void init(void)
+{
+
+    glClearColor(1.0, 1.0, 1.0, 1.0); // Cor de fundo
+
+    glOrtho(0, 256, 0, 256, -1, 1); // Modo de projeção ortogonal
+}
+
+void display(void)
+{
+
+    glClear(GL_COLOR_BUFFER_BIT); // Limpa a janela
+
+    glColor3f(0.0, 0.0, 0.0); // Cor da linha
+
+    glBegin(GL_LINES);
+
+    glVertex2i(40, 200);
+    glVertex2i(200, 10); // Coordenadas inicial e final da linha
 
     glEnd();
 
     glFlush();
-}
-
-void Inicializa(void)
-
-{
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-void MudaTamanhoJanela(GLsizei w, GLsizei h)
-{
-    if (h == 0)
-        h = 1;
-
-    glViewport(0, 0, w, h);
-
-    glMatrixMode(GL_PROJECTION);
-
-    glLoadIdentity();
-
-    if (w <= h)
-        gluOrtho2D(0.0f, 250.0f, 0.0f, 250.0f * h / w);
-    else
-        gluOrtho2D(0.0f, 250.0f * w / h, 0.0f, 250.0f);
-}
-
-
-int main(int argc, char *argv[])
-{
-    glutInit(&argc, argv);
-    int a = GLUT_DOUBLE | GLUT_SINGLE | GLUT_RGBA | GLUT_RGB | GLUT_INDEX | GLUT_DEPTH | GLUT_STENCIL | GLUT_MULTISAMPLE;
-    int b = GLUT_SINGLE | GLUT_RGB;
-    printf("%d %x %d %x",a,a,b,b);
-    glutInitDisplayMode(b);
-
-    glutInitWindowSize(500, 350);
-
-    glutInitWindowPosition(50, 30);
-
-    glutCreateWindow("Quadrado");
-
-    glutDisplayFunc(Desenha);
-
-    glutReshapeFunc(MudaTamanhoJanela);
-
-    Inicializa();
-
-    glutMainLoop();
 }
