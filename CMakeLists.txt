@@ -37,18 +37,25 @@ if (NOT GLUT_FOUND)
 endif()
 
 # Add the executable target
-add_executable(MyExecutable ${SOURCES})
+add_executable(gl ${SOURCES})
 
 # Specify output path for the executable
-set_target_properties(MyExecutable PROPERTIES
+set_target_properties(gl PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_OUTPUT_PATH}"
 )
 
 # Link the libraries
-target_link_libraries(MyExecutable ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+target_link_libraries(gl ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
 # Generate assembly files for each source file
 set(ASM_FILES)  # To hold the assembly files
+
+target_compile_options(gl PRIVATE
+        -Wall        # Enable all warnings
+        -Wextra     # Enable extra warnings
+        -Wpedantic   # Enable strict ISO C/C++ compliance
+        #-Werror     # Treat warnings as errors
+)
 
 foreach(SOURCE ${FILES})
     # Get the filename without the extension

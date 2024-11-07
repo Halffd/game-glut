@@ -3,3 +3,4 @@ bin
 src/file
 .history
 .cache
+.idea
